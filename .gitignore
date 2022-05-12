@@ -1,2 +1,5 @@
 /manage.py
 /HangmanProject/__pycache__
+__pycache__
+migrations
+db.sqlite3
