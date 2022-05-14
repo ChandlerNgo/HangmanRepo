@@ -9,21 +9,28 @@
             <div class="jumbotron">
                 <div class="display-4">Hangman Game</div>
                 <hr class="my-4">
-                <div class="gamewindow">
+                
+                <div class="gamewindow">    
                     <img style="border:2px solid black" src={{gamestate}}></img>
                 </div>
                 <hr class="my-6">
                 <div class="input">
-                    <form>
+                    <form method="POST" action="">
                         {% csrf_token %}
+                        {{letterlist}}
                         <div class="form-group md-2">
                             <label for="letterGuess">Enter your guess!</label>
-                            <input type="text" class="form-control col-md-2" id="letterGuess">
-                            <button type="submit" class="btn btn-primary mb-2">Confirm identity</button>
+                            <input type="text" class="form-control col-md-2" name="guess"></input>
+                            <button type="submit" class="btn btn-primary mb-2" name="confirm">Confirm Guess</button>
+                            <button type="submit" class="btn btn-primary mb-2" name="reset">New Game</button>
+                            {{guess}}
+                            {{word}}
+                            {{fillword}}
+                            {{error}}
                         </div>
                     </form>
                 </div>
-            </div>    
-        </center>
+            </div>
+        </center>    
     </body>
 </html>
