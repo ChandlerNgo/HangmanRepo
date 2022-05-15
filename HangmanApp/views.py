@@ -29,6 +29,9 @@ def index(request):
     if request.method == "POST":
         if 'confirm' in request.POST:
             guess = request.POST["guess"].upper()
+            guesslist = ""
+            for letter in request.session['guesses']:
+                guesslist = guesslist+letter+" "
             if guess not in alphabet_list:
                 response = {
                     "gamestate": f"static/state{request.session['wrong']}.png/",
@@ -37,10 +40,13 @@ def index(request):
                     "word": request.session['answer'],
                     "fillword": request.session['fillword'],
                     "error": "Try one of the letters listed above",
-                    "guesses":request.session['guesses']
+                    "guesses":guesslist
                 }
             else:# guess is in alphabet_list
                 if guess in request.session['guesses']: # you have guessed the letter
+                    guesslist = ""
+                    for letter in request.session['guesses']:
+                        guesslist = guesslist+letter+" "
                     response = {
                         "gamestate": f"static/state{request.session['wrong']}.png/",
                         "letterlist": letterlist,
@@ -48,33 +54,69 @@ def index(request):
                         "word": request.session['answer'],
                         "fillword": request.session['fillword'],
                         "error": "You have guessed this already",
-                        "guesses":request.session['guesses']
+                        "guesses":guesslist
                     }
                 else:#you haven't guessed this letter yet
                     request.session['guesses'].append(guess)
                     if guess not in request.session['answer']:
-                        request.session['wrong'] += 1
-                        response = {
-                            "gamestate": f"static/state{request.session['wrong']}.png/",
-                            "letterlist": letterlist,
-                            "guess": guess,
-                            "word": request.session['answer'],
-                            "fillword": request.session['fillword'],
-                            "guesses":request.session['guesses']
-                        }
+                        if request.session['wrong'] < 6:
+                            request.session['wrong'] += 1
+                            guesslist = ""
+                            for letter in request.session['guesses']:
+                                guesslist = guesslist+letter+" "
+                            response = {
+                                "gamestate": f"static/state{request.session['wrong']}.png/",
+                                "letterlist": letterlist,
+                                "guess": guess,
+                                "word": request.session['answer'],
+                                "fillword": request.session['fillword'],
+                                "guesses":guesslist
+                            }
+                        if request.session['wrong'] >= 6:
+                            guesslist = ""
+                            for letter in request.session['guesses']:
+                                guesslist = guesslist+letter+" "
+                            response = {
+                                "gamestate": f"static/state{request.session['wrong']}.png/",
+                                "letterlist": letterlist,
+                                "guess": guess,
+                                "word": request.session['answer'],
+                                "fillword": request.session['fillword'],
+                                "error": "GAME OVER",
+                                "guesses":guesslist
+                            }
+                            return render(request,"index.html",response)
                     else:
-                        position = request.session['answer'].index(guess)
-                        temp = list(request.session['fillword'])
-                        temp[position] = guess
-                        request.session['fillword'] = "".join(temp)
-                        response = {
-                            "gamestate": f"static/state{request.session['wrong']}.png/",
-                            "letterlist": letterlist,
-                            "guess": guess,
-                            "word": request.session['answer'],
-                            "fillword": request.session['fillword'],
-                            "guesses":request.session['guesses']
-                        }
+                        for i,wordletter in enumerate(request.session['answer']):
+                            if wordletter == guess:
+                                temp = list(request.session['fillword'])
+                                temp[i] = guess
+                                request.session['fillword'] = "".join(temp)
+                        if request.session['fillword'] == request.session['answer']:
+                            guesslist = ""
+                            for letter in request.session['guesses']:
+                                guesslist = guesslist+letter+" "
+                            response = {
+                                "gamestate": f"static/state{request.session['wrong']}.png/",
+                                "letterlist": letterlist,
+                                "guess": guess,
+                                "word": request.session['answer'],
+                                "fillword": request.session['fillword'],
+                                "error": "YOU WON",
+                                "guesses":guesslist
+                            }
+                        else:
+                            guesslist = ""
+                            for letter in request.session['guesses']:
+                                guesslist = guesslist+letter+" "
+                            response = {
+                                "gamestate": f"static/state{request.session['wrong']}.png/",
+                                "letterlist": letterlist,
+                                "guess": guess,
+                                "word": request.session['answer'],
+                                "fillword": request.session['fillword'],
+                                "guesses":guesslist
+                            }
                         #update the fillword, guesses
         elif 'reset' in request.POST:
             words = ("enigma","pneumonia","keyboard", "burger", "sheesh", "broken", "brazil", "vietnam")
@@ -88,12 +130,15 @@ def index(request):
             request.session['wrong'] = 0
             request.session['fillword'] = fillword
             request.session['guesses'] = []
+            guesslist = ""
+            for letter in request.session['guesses']:
+                guesslist = guesslist+letter+" "
             response = {
                 "gamestate": f"static/state{request.session['wrong']}.png/",
                 "letterlist": letterlist,
                 "word": request.session['answer'],
                 "fillword": request.session['fillword'],
-                "guesses": request.session['guesses'],
+                "guesses": guesslist,
             }
     return render(request,"index.html",response)
 
