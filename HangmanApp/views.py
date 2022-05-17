@@ -86,7 +86,7 @@ def index(request):
                                 "letterlist": letterlist,
                                 "guess": guess,
                                 "word": request.session['answer'],
-                                "fillword": request.session['fillword'],
+                                "fillword": request.session['answer'],
                                 "error": "GAME OVER",
                                 "guesses":guesslist
                             }
