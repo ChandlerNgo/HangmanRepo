@@ -5,6 +5,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
     </head>
     <body>
+        
         <center>
             <div class="jumbotron">
                 <div class="display-4">Hangman Game</div>
@@ -19,13 +20,17 @@
                         {% csrf_token %}
                         {{letterlist}}
                         <div class="form-group md-2">
+                            <script src="index.js"></script>
+                            
                             <label for="letterGuess">Enter your guess!</label>
                             <input type="text" class="form-control col-md-2" name="guess"></input>
-                            <button type="submit" class="btn btn-primary mb-2" name="confirm">Confirm Guess</button>
+                            {% if gamestate != "static/state6.png/" and error != "YOU WON" %}
+                                <button id="confirm" type="submit" class="btn btn-success mb-2" name="confirm">Confirm Guess</button>
+                            {% endif %}
                             <button type="submit" class="btn btn-primary mb-2" name="reset">New Game</button>
-                            {{fillword}}
-                            {{error}}
-                            {{guesses}}
+                            <p id="fillword">{{fillword}}</p>
+                            <p id="error">{{error}}</p>
+                            <p id="guesses">{{guesses}}</p>
                         </div>
                     </form>
                 </div>

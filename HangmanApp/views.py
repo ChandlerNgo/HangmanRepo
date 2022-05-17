@@ -4,13 +4,19 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import random
 # Create your views here.
-
+wordlist = []
+with open('HangmanApp/1-1000.txt','r+') as file:
+    lines = file.readlines()
+    for line in lines:
+        updated_line = line[:-1]
+        wordlist.append(updated_line)
+    
+    #remove last letter of word
 def index(request):
-    words = ("enigma","pneumonia","keyboard", "burger", "sheesh", "broken", "brazil", "vietnam")
     letterlist = ""
     if 'answer' not in request.session:
         request.session['guesses'] = []
-        answer = random.choice(words)
+        answer = random.choice(wordlist)
         answer = answer.upper()
         fillword = "_"*len(answer)
         request.session['answer'] = answer
@@ -24,7 +30,6 @@ def index(request):
         "letterlist": letterlist,
         "word": request.session['answer'],
         "fillword": request.session['fillword'],
-        "guesses":request.session['guesses']
     }
     if request.method == "POST":
         if 'confirm' in request.POST:
@@ -119,11 +124,10 @@ def index(request):
                             }
                         #update the fillword, guesses
         elif 'reset' in request.POST:
-            words = ("enigma","pneumonia","keyboard", "burger", "sheesh", "broken", "brazil", "vietnam")
             letterlist = ""
             for letters in alphabet_list:
                 letterlist += letters +" "
-            answer = random.choice(words)
+            answer = random.choice(wordlist)
             answer = answer.upper()
             fillword = "_"*len(answer)
             request.session['answer'] = answer
