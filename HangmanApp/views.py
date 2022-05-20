@@ -1,7 +1,4 @@
-from http.client import HTTPS_PORT
-import re
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 import random
 # Create your views here.
 wordlist = []

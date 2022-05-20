@@ -20,8 +20,6 @@
                         {% csrf_token %}
                         {{letterlist}}
                         <div class="form-group md-2">
-                            <script src="index.js"></script>
-                            
                             <label for="letterGuess">Enter your guess!</label>
                             <input type="text" class="form-control col-md-2" name="guess"></input>
                             {% if gamestate != "static/state6.png/" and error != "YOU WON" %}
